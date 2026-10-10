@@ -52,32 +52,28 @@ app.get("/api/wx_openid", async (req, res) => {
 app.use(express.json());
 
 app.post('/api/parse', async (req, res) => {
-  try {
-    const url = (req.body && req.body.url) || '';
-    if (!url) {
-      return res.json({ code: 400, msg: 'url 不能为空', data: {} });
-    }
+  const { url } = req.body || {}
 
-    // 占位：后续替换为真实解析逻辑
-    const result = await parseShareUrl(url);
-
-    return res.json({
-      code: 1,
-      msg: '解析成功',
-      data: result || {}
-    });
-  } catch (e) {
-    console.error('parse error:', e);
-    return res.json({ code: 500, msg: String(e.message || e), data: {} });
+  if (!url) {
+    return res.status(400).json({
+      code: 0,
+      msg: '缺少 url 参数'
+    })
   }
-});
 
-// 占位函数，后续按平台实现
-async function parseShareUrl(url) {
-  // TODO: 根据 url 判断平台，调用对应解析器
-  // 返回格式: { platform, type, title, author, cover_url, video_url, images }
-  return {};
-}
+  return res.json({
+    code: 1,
+    msg: '解析接口已连接',
+    data: {
+      type: 'video',
+      title: '测试结果',
+      video_url: '',
+      cover_url: '',
+      description: `收到链接：${url}`,
+      author: '测试服务'
+    }
+  })
+})
 
 const port = process.env.PORT || 80;
 
