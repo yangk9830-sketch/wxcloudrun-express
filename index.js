@@ -48,6 +48,36 @@ app.get("/api/wx_openid", async (req, res) => {
     res.send(req.headers["x-wx-openid"]);
   }
 });
+// ========== 去水印解析接口 ==========
+app.use(express.json());
+
+app.post('/api/parse', async (req, res) => {
+  try {
+    const url = (req.body && req.body.url) || '';
+    if (!url) {
+      return res.json({ code: 400, msg: 'url 不能为空', data: {} });
+    }
+
+    // 占位：后续替换为真实解析逻辑
+    const result = await parseShareUrl(url);
+
+    return res.json({
+      code: 1,
+      msg: '解析成功',
+      data: result || {}
+    });
+  } catch (e) {
+    console.error('parse error:', e);
+    return res.json({ code: 500, msg: String(e.message || e), data: {} });
+  }
+});
+
+// 占位函数，后续按平台实现
+async function parseShareUrl(url) {
+  // TODO: 根据 url 判断平台，调用对应解析器
+  // 返回格式: { platform, type, title, author, cover_url, video_url, images }
+  return {};
+}
 
 const port = process.env.PORT || 80;
 
